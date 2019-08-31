@@ -1,4 +1,5 @@
 import 'package:flutter_web/material.dart';
+// Fix icon render issue https://github.com/flutter/flutter/issues/32540
 
 void main() => runApp(MyApp());
 
@@ -7,11 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'WIP Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Business Card Page'),
     );
   }
 }
@@ -23,39 +24,107 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (choose the "Toggle Debug Paint" action
-          // from the Flutter Inspector in Android Studio, or the "Toggle Debug
-          // Paint" command in Visual Studio Code) to see the wireframe for each
-          // widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hello, World!',
-            ),
-          ],
+        child: Container(
+          margin: const EdgeInsets.all(15.0),
+          padding: const EdgeInsets.all(5.0),
+          width: 350.0,
+          // height: 200,
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          child: SizedBoxWrapper(),
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+    );
+  }
+}
+
+class SizedBoxWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        NameWithIcon(),
+        SizedBox(
+          height: 8,
+        ),
+        ContactRow(), // add contact info
+        SizedBox(
+          height: 16,
+        ),
+        IconRow(), // add 4 icons
+        SizedBox(
+          height: 8,
+        ),
+      ],
+    );
+  }
+}
+
+class ContactRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text('123 Main Street'),
+        Text('(415) 555-0198'),
+      ],
+    );
+  }
+}
+
+class IconRow extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Icon(Icons.accessibility),
+        Icon(Icons.timer),
+        Icon(Icons.phone_android),
+        Icon(Icons.phone_iphone),
+      ],
+    );
+  }
+}
+
+class NameWithIcon extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Icon(
+            Icons.account_circle,
+            size: 50,
+          ),
+        ),
+        MyName(),
+      ],
+    );
+  }
+}
+
+class MyName extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Flutter McFlutter',
+          style: Theme.of(context).textTheme.headline,
+        ),
+        Text('Experienced Developer'),
+      ],
     );
   }
 }
