@@ -6,56 +6,86 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ColumnBox();
+  }
+}
+
+class BlueBox extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        border: Border.all(),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
+class ColumnBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (choose the "Toggle Debug Paint" action
-          // from the Flutter Inspector in Android Studio, or the "Toggle Debug
-          // Paint" command in Visual Studio Code) to see the wireframe for each
-          // widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hello, World!',
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        BlueBox(),
+        Spacer(
+          flex: 2,
         ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        BlueBox(),
+        Spacer(
+          flex: 2,
+        ),
+        BlueBox(),
+        Spacer(
+          flex: 1,
+        ),
+        // Image.network(
+        //     'https://github.com/flutter/website/blob/master/examples/layout/sizing/images/pic1.jpg?raw=true'),
+        Expanded(
+          // Filling extra space
+          child: BlueBox(),
+        ),
+      ],
+    );
+  }
+}
+
+class HeyText extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Text(
+          'Hey!',
+          style: TextStyle(
+            fontSize: 30,
+            fontFamily: 'Futura',
+            color: Colors.blue,
+          ),
+        ),
+        Text(
+          'Hey!',
+          style: TextStyle(
+            fontSize: 50,
+            fontFamily: 'Futura',
+            color: Colors.green,
+          ),
+        ),
+        Text(
+          'Hey!',
+          style: TextStyle(
+            fontSize: 40,
+            fontFamily: 'Futura',
+            color: Colors.red,
+          ),
+        ),
+      ],
     );
   }
 }
