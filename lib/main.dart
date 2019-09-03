@@ -1,41 +1,53 @@
 import 'package:flutter_web/material.dart';
 
-void main() => runApp(MyApp());
+main() {
+  runApp(MaterialApp(
+    home: Page1(),
+  ));
+}
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
+class Page1 extends StatelessWidget {
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Animate a page route transition'),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      body: Center(
+        child: RaisedButton(
+          child: Text('Go!'),
+          onPressed: () {
+            Navigator.of(context).push(_createRoute());
+          },
+        ),
+      ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+Route _createRoute() {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => Page2(),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(0.0, 1.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
 
-  final String title;
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-  @override
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  );
+}
+
+class Page2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar: AppBar(),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Hello, World!',
-            ),
-          ],
-        ),
+        child: Text('Page 2'),
       ),
     );
   }

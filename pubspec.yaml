@@ -1,5 +1,5 @@
 name: init
-description: An app built using Flutter for web
+description: https://flutter.dev/docs/cookbook/animation/page-route-animation
 
 environment:
   # You must be using Flutter >=1.5.0 or Dart >=2.3.0
