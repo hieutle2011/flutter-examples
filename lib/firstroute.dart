@@ -18,11 +18,27 @@ class FirstRoute extends StatelessWidget {
             Text(
               'Hello, World!',
             ),
+            Divider(),
+            RaisedButton(
+              child: Text('Draw Now!'),
+              onPressed: () {
+                print('pressed');
+              },
+            ),
+            Divider(),
             RaisedButton(
               child: Text('Open route'),
               onPressed: () {
                 // Navigate to second route when tapped.
                 Navigator.pushNamed(context, '/second');
+              },
+            ),
+            Divider(),
+            RaisedButton(
+              child: Text('Open box'),
+              onPressed: () {
+                // Navigate to second route when tapped.
+                Navigator.pushNamed(context, '/box');
               },
             ),
           ],
