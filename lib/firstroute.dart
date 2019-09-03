@@ -1,8 +1,7 @@
 import 'package:flutter_web/material.dart';
-import 'package:init/secondroute.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class FirstRoute extends StatelessWidget {
+  FirstRoute({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -23,8 +22,7 @@ class MyHomePage extends StatelessWidget {
               child: Text('Open route'),
               onPressed: () {
                 // Navigate to second route when tapped.
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SecondRoute()));
+                Navigator.pushNamed(context, '/second');
               },
             ),
           ],

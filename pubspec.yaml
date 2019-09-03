@@ -1,5 +1,5 @@
 name: init
-description: https://flutter.dev/docs/cookbook/navigation/navigation-basics.html
+description: https://flutter.dev/docs/cookbook/navigation/named-routes.html
 
 environment:
   # You must be using Flutter >=1.5.0 or Dart >=2.3.0
