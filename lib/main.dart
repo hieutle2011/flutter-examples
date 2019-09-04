@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstRoute widget.
-        '/': (context) => FirstRoute(title: 'Flutter Demo Home Page'),
+        '/': (context) => FirstRoute(title: 'Lucky Draw '),
         '/second': (context) => SecondRoute(),
         '/box': (context) => MyHomePage(title: 'Animated Box'),
       },
