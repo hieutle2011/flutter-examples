@@ -1,12 +1,14 @@
 import 'package:flutter_web/material.dart';
 
-import 'widget/post.dart';
+import 'widget/spinner.dart';
 
 class FirstRoute extends StatelessWidget {
-  FirstRoute({Key key, this.title, this.post}) : super(key: key);
+  FirstRoute({
+    Key key,
+    this.title,
+  }) : super(key: key);
 
   final String title;
-  final Future<Post> post;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,8 @@ class FirstRoute extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            PostData(),
+            // PostData(),
+            Spinner(),
             Divider(),
             RaisedButton(
               child: Text('Open route'),

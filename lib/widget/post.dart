@@ -43,8 +43,8 @@ Future<Post> fetchPost() async {
   }
 }
 
-
 class PostData extends StatefulWidget {
+  PostData({Key key}) : super(key: key);
   @override
   _PostDataState createState() => _PostDataState();
 }

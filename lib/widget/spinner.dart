@@ -37,7 +37,7 @@ class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
       children: <Widget>[
         AnimatedBuilder(
           animation: _controller,
-          child: Image.asset('wheel.jpeg'),
+          child: Image.asset('wheel.png'),
           builder: (BuildContext context, Widget child) {
             return Transform.rotate(
               angle: _controller.value * 15.0 * math.pi,
@@ -51,8 +51,8 @@ class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
             _handleClick();
             await Future.delayed(const Duration(seconds: 3), () {
               dispose();
+              // Navigator.pushNamed(context, '/second');
             });
-            // dispose();
           },
         ),
       ],
