@@ -2,6 +2,8 @@ import 'package:flutter_web/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'data.dart';
+
 class PostData extends StatefulWidget {
   @override
   _PostDataState createState() => _PostDataState();
@@ -9,6 +11,12 @@ class PostData extends StatefulWidget {
 
 class _PostDataState extends State<PostData> {
   Future<Post> post;
+
+  void _handlePress() {
+    setState(() {
+      post = fetchPost();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +33,7 @@ class _PostDataState extends State<PostData> {
               builder: (context, snapshot) {
                 // print(snapshot);
                 if (snapshot.hasData) {
-                  return Text(snapshot.data.ticketId);
+                  return Image.asset(pic[snapshot.data.ticketId]);
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 }
@@ -36,11 +44,7 @@ class _PostDataState extends State<PostData> {
           ),
           RaisedButton(
             child: Text('Draw Now!'),
-            onPressed: () {
-              setState(() {
-                post = fetchPost();
-              });
-            },
+            onPressed: _handlePress,
           ),
         ],
       ),
@@ -111,9 +115,6 @@ class Post {
     // }
   }
 }
-
-String url =
-    'https://virtserver.swaggerhub.com/nguansak/lucky-draw/1.0.1/reward/draw';
 
 Future<Post> fetchPost() async {
   final response = await http.post(url);
