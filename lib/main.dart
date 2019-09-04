@@ -1,4 +1,5 @@
 import 'package:flutter_web/material.dart';
+import 'spinner.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Animation and Delay'),
     );
   }
 }
@@ -31,9 +32,7 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Hello, World!',
-            ),
+            Spinner(),
           ],
         ),
       ),
