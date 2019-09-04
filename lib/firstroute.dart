@@ -2,6 +2,52 @@ import 'package:flutter_web/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+class PostData extends StatefulWidget {
+  @override
+  _PostDataState createState() => _PostDataState();
+}
+
+class _PostDataState extends State<PostData> {
+  Future<Post> post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: 400,
+            height: 200,
+            alignment: Alignment.center,
+            color: Colors.amberAccent,
+            child: FutureBuilder<Post>(
+              future: post,
+              builder: (context, snapshot) {
+                // print(snapshot);
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.ticketId);
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+                // return CircularProgressIndicator();
+                return Text('Lucky Draw ');
+              },
+            ),
+          ),
+          RaisedButton(
+            child: Text('Draw Now!'),
+            onPressed: () {
+              setState(() {
+                post = fetchPost();
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class FirstRoute extends StatelessWidget {
   FirstRoute({Key key, this.title, this.post}) : super(key: key);
 
@@ -18,38 +64,7 @@ class FirstRoute extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: 400,
-              height: 200,
-              alignment: Alignment.center,
-              color: Colors.amberAccent,
-              child: FutureBuilder<Post>(
-                // initialData: <Post>(ticketId = 'aaa', rewardId = 'bbb'),
-                future: fetchPost(),
-                builder: (context, snapshot) {
-                  print(snapshot);
-                  if (snapshot.hasData) {
-                    return Text(snapshot.data.ticketId);
-                  } else if (snapshot.hasError) {
-                    return Text('${snapshot.error}');
-                  }
-                  print('here');
-                  return CircularProgressIndicator();
-                },
-              ),
-            ),
-            Divider(),
-            Text(
-              'Hello, World!',
-            ),
-            Divider(),
-            RaisedButton(
-              child: Text('Draw Now!'),
-              onPressed: () {
-                print('pressed');
-                fetchPost();
-              },
-            ),
+            PostData(),
             Divider(),
             RaisedButton(
               child: Text('Open route'),
@@ -107,7 +122,7 @@ Future<Post> fetchPost() async {
   if (response.statusCode == 200) {
     // If server returns an OK response, parse the JSON.
     var body = jsonDecode(response.body);
-    print(body);
+    // print(body);
     return Post.fromJson(body);
   } else {
     // If that response was not OK, throw an error.
