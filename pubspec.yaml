@@ -1,5 +1,5 @@
 name: init
-description: An app built using Flutter for web
+description: https://flutter.dev/docs/development/ui/interactive#stateful-and-stateless-widgets
 
 environment:
   # You must be using Flutter >=1.5.0 or Dart >=2.3.0
@@ -26,3 +26,5 @@ dependency_overrides:
 
 flutter:
   uses-material-design: true
+  assets:
+    - images/lake.jpg
