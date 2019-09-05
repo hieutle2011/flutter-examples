@@ -1,5 +1,5 @@
 name: init
-description: https://flutter.dev/docs/development/ui/interactive#the-widget-manages-its-own-state
+description: https://flutter.dev/docs/development/ui/interactive#the-parent-widget-manages-the-widgets-state
 
 environment:
   # You must be using Flutter >=1.5.0 or Dart >=2.3.0
