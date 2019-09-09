@@ -1,59 +1,45 @@
 import 'package:flutter_web/material.dart';
 import 'dart:math' as math;
-import 'dart:async';
 
-class Spinner extends StatefulWidget {
-  @override
-  _SpinnerState createState() => _SpinnerState();
-}
+class Spinner extends StatelessWidget {
+  Spinner({Key key, this.controller, this.onChanged}) : super(key: key);
 
-class _SpinnerState extends State<Spinner> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  final AnimationController controller;
+  final onChanged;
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 10),
-      vsync: this,
-    );
-  }
-
-  void _handleClick() {
-    setState(() {
-      _controller..repeat();
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void _handlePress() {
+    onChanged();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        AnimatedBuilder(
-          animation: _controller,
-          child: Image.asset('wheel.png'),
-          builder: (BuildContext context, Widget child) {
-            return Transform.rotate(
-              angle: _controller.value * 15.0 * math.pi,
-              child: child,
-            );
-          },
+        GestureDetector(
+          onTap: _handlePress,
+          child: AnimatedBuilder(
+            animation: controller,
+            child: Image.asset(
+              'images/wheel.png',
+              height: 300,
+              width: 300,
+            ),
+            builder: (BuildContext context, Widget child) {
+              return Transform.rotate(
+                angle: controller.value * 15.0 * math.pi,
+                child: child,
+              );
+            },
+          ),
         ),
-        RaisedButton(
-          child: Text('Draw'),
-          onPressed: () async {
-            _handleClick();
-            await Future.delayed(const Duration(seconds: 3), () {
-              dispose();
-              // Navigator.pushNamed(context, '/second');
-            });
-          },
+        Container(
+          padding: EdgeInsets.only(top: 20),
+          child: RaisedButton(
+            child: Text('Draw'),
+            onPressed: _handlePress,
+            color: Theme.of(context).primaryColor,
+            textColor: Colors.white,
+          ),
         ),
       ],
     );

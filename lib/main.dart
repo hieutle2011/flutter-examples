@@ -1,7 +1,8 @@
 import 'package:flutter_web/material.dart';
 import 'firstroute.dart';
-import 'secondroute.dart';
-import 'box_route.dart';
+// import 'secondroute.dart';
+// import 'box_route.dart';
+import 'award.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,9 +14,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // When navigating to the "/" route, build the FirstRoute widget.
-        '/': (context) => FirstRoute(title: 'Lucky Draw '),
-        '/second': (context) => SecondRoute(),
-        '/box': (context) => MyHomePage(title: 'Animated Box'),
+        '/': (context) => FirstRoute(),
+        // '/second': (context) => SecondRoute(),
+        // '/box': (context) => MyHomePage(title: 'Animated Box'),
+        '/award': (context) => AwardRoute(),
       },
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -24,4 +26,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
