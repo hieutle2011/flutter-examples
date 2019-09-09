@@ -1,57 +1,33 @@
 import 'package:flutter_web/material.dart';
+import 'widget/reward.dart';
+import 'widget/data.dart';
+
+import 'dart:html';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 
-import 'data.dart';
-
-class Post {
-  final String ticketId;
-  final String rewardId;
-  final String message;
-
-  Post({this.ticketId, this.rewardId, this.message});
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    print(json);
-
-    if (json['code'] == 200) {
-      return Post(
-          ticketId: json['result']['ticketId'],
-          rewardId: json['result']['reward']['id'],
-          message: 'success');
-    } else {
-      return Post(ticketId: '', rewardId: '', message: json['message']);
-    }
-    //
-    // Example draw result
-    // {
-    //   "code": 200,
-    //   "result": {
-    //     "ticketId": "d9f1adca-7fc2-4282-af33-d9c5a2b46a9a",
-    //     "reward": {
-    //       "id": "d290f1ee-6c54-4b01-90e6-d701748f0851"
-    //     }
-    //   }
-    // }
+class RewardRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Congratulation"),
+      ),
+      body: ListView(
+        children: <Widget>[
+          AwardPost(),
+        ],
+      ),
+    );
   }
 }
 
-Future<Post> fetchPost(String url) async {
-  final response = await http.post(url, body: {'playerId': '123'});
-
-  if (response.statusCode == 200 || response.statusCode == 400) {
-    // If server returns an OK response, parse the JSON.
-    var body = jsonDecode(response.body);
-    // print(body);
-    return Post.fromJson(body);
-  } else {
-    // If that response was not OK, throw an error.
-    throw Exception('Failed to load post');
-  }
-}
-
-void _fetchReload(String url) {
-  http.post(url, body: {'playerId': '123'});
+void _fetchReload(String url) async {
+  var body = {'quota': 5, 'playerId': '123'};
+  var header = {'Content-Type': 'application/json; charset=UTF-8'};
+  var res = await HttpRequest.request(url,
+      method: 'POST', sendData: json.encode(body), requestHeaders: header);
+  print(res.status);
+  // return res.status;
 }
 
 void _invokeSnackBar(BuildContext context) {
@@ -82,7 +58,7 @@ class AwardPost extends StatelessWidget {
     return Center(
       child: Column(
         children: <Widget>[
-          FutureBuilder<Post>(
+          FutureBuilder<Reward>(
             future: fetchPost(url),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -92,6 +68,11 @@ class AwardPost extends StatelessWidget {
                   String rewardId = snapshot.data.rewardId;
                   return Column(
                     children: <Widget>[
+                      // debug purpose
+                      // RaisedButton(
+                      //   onPressed: () => _fetchReload(reload_url),
+                      //   child: Text('Reload'),
+                      // ),
                       _textBuilder('Your award', 12, FontWeight.bold),
                       Container(
                         child: Image.asset(pic[rewardId]),
