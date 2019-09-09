@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:flutter_web_ui/ui.dart' as ui;
-import 'package:init/main.dart' as app;
+import 'package:lucky_draw_app/main.dart' as app;
 
 main() async {
   await ui.webOnlyInitializePlatform();
