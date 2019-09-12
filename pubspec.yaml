@@ -1,5 +1,6 @@
 name: init
-description: An app built using Flutter for web
+description: An app for ScrollController and ScrollNotification
+  https://medium.com/@diegoveloper/flutter-lets-know-the-scrollcontroller-and-scrollnotification-652b2685a4ac
 
 environment:
   # You must be using Flutter >=1.5.0 or Dart >=2.3.0
