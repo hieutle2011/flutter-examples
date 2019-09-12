@@ -1,8 +1,9 @@
 import 'package:flutter_web/material.dart';
+import 'package:graphql/client.dart';
 // import 'package:graphql/client.dart';
 
 import 'prisma.dart';
-// import 'user.dart';
+import 'user.dart';
 
 void main() => runApp(MyApp());
 
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -29,18 +31,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String message = "abc";
+  String message = "max Scroll or min Scroll";
   ScrollController _controller;
-  // final List<Map<String, String>> _notifications = <Map<String, String>>[];
+  Future<QueryResult> future;
+  bool mode = true;
+  // List<dynamic> sampleData = [
+  //   User(id: '1', name: 'abc 1'),
+  //   User(id: '2', name: 'abc 2'),
+  //   User(id: '3', name: 'abc 3'),
+  //   User(id: '4', name: 'abc 4'),
+  //   User(id: '5', name: 'abc 5'),
+  // ];
 
   _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent) {
       setState(() {
-        message = 'reach the bottom';
+        message = 'reach the bottom = max scroll';
       });
     } else if (_controller.offset <= _controller.position.minScrollExtent) {
       setState(() {
-        message = 'reach the top';
+        message = 'reach the top = min scroll';
       });
     }
   }
@@ -49,7 +59,33 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
+    future = FuncPullRefresh();
     super.initState();
+  }
+
+  void loadNew() {
+    print('click');
+    setState(() {
+      future = FuncLoadNew();
+    });
+  }
+
+  void pullRefresh() {
+    setState(() {
+      future = FuncPullRefresh();
+    });
+  }
+
+  void loadMore() {
+    setState(() {
+      future = FuncLoadMore();
+    });
+  }
+
+  void changeMode() {
+    setState(() {
+      mode = !mode;
+    });
   }
 
   @override
@@ -57,6 +93,28 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Scroll Limit reached"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.new_releases),
+            onPressed: () => loadNew(),
+            tooltip: "Load New",
+          ),
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => pullRefresh(),
+            tooltip: "Pull Refresh",
+          ),
+          IconButton(
+            icon: Icon(Icons.more),
+            onPressed: () => loadMore(),
+            tooltip: "Load More",
+          ),
+          IconButton(
+            icon: Icon(Icons.mode_edit),
+            onPressed: () => changeMode(),
+            tooltip: "Change Scroll Data",
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -67,49 +125,46 @@ class _HomePageState extends State<HomePage> {
               child: Text(message),
             ),
           ),
-          FutureBuilder(
-            future: FuncPullRefresh(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                var data = snapshot.data.data['users'][0]['name'];
-                List<dynamic> users = snapshot.data.data['users'];
-                print('data is ${data}');
-                print('users is ${users}');
-                // return Container(child: Text('data'));
-                return Expanded(
+          mode
+              ? FutureBuilder(
+                  future: future,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      List<dynamic> users = snapshot.data.data['users']
+                          .map((user) => User.fromJson(user))
+                          .toList();
+                      return Expanded(
+                        child: ListView.builder(
+                          // reverse: true,
+                          controller: _controller,
+                          itemCount: users.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              leading: Icon(Icons.face),
+                              title: Text(
+                                  "Index : $index - ${users[index].getName()}"),
+                            );
+                          },
+                        ),
+                      );
+                    } else {
+                      return CircularProgressIndicator();
+                    }
+                  },
+                )
+              : Expanded(
                   child: ListView.builder(
                     // reverse: true,
                     controller: _controller,
-                    itemCount: users.length,
+                    itemCount: 15,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        leading: Icon(Icons.message),
-                        // title: Text("Index : $index"),
-                        title: Text("Index : $index ${users[index]['name']}"),
-                        // subtitle: Text('Name: ${users[index].name}'),
+                        leading: Icon(Icons.list),
+                        title: Text("Index : $index"),
                       );
                     },
                   ),
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          ),
-
-          // Expanded(
-          //   child: ListView.builder(
-          //     reverse: true,
-          //     controller: _controller,
-          //     itemCount: 15,
-          //     itemBuilder: (context, index) {
-          //       return ListTile(
-          //         leading: Icon(Icons.message),
-          //         title: Text("Index : $index"),
-          //       );
-          //     },
-          //   ),
-          // ),
+                ),
         ],
       ),
     );
