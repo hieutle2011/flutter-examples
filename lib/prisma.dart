@@ -1,5 +1,7 @@
 import 'package:graphql/client.dart';
 
+import 'user.dart';
+
 final HttpLink _httpLink = HttpLink(
   uri: 'https://us1.prisma.sh/hieuletrung102-9dd903/hello-world/dev',
 );
@@ -38,16 +40,40 @@ const String LoadMore = r'''
 
 const int pageSize = 2;
 
-final QueryOptions options = QueryOptions(
-  document: LoadNew,
-  variables: <String, dynamic>{'pageSize': pageSize},
-);
+// final QueryOptions options = QueryOptions(
+//   document: LoadNew,
+//   variables: <String, dynamic>{'pageSize': pageSize},
+// );
+
+QueryOptions newOption(String doc) {
+  return QueryOptions(
+    document: doc,
+    variables: <String, dynamic>{'pageSize': pageSize},
+  );
+}
+
+Future<QueryResult> FuncLoadNew() async {
+  QueryOptions options = newOption(LoadNew);
+  return await _client.query(options);
+}
+
+Future<QueryResult> FuncPullRefresh() async {
+  QueryOptions options = newOption(PullRefresh);
+  return await _client.query(options);
+}
+
+Future<QueryResult> FuncLoadMore() async {
+  QueryOptions options = newOption(LoadMore);
+  return await _client.query(options);
+}
 
 void main() async {
-  final QueryResult result = await _client.query(options);
+  QueryResult result = await FuncPullRefresh();
   if (result.hasErrors) {
     print(result.errors);
   }
-
   print(result.data['users']);
+  var arr = result.data['users'].map((user) => {User.fromJson(user)});
+  var list = List.from(arr);
+  print(list[0] is User);
 }
