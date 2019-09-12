@@ -36,16 +36,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('widget.title'),
-      ),
+      // appBar: AppBar(
+      //   title: Text('widget.title'),
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
             JokePanel(joke: joke),
           ],
         ),
@@ -53,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _newJoke,
         tooltip: 'New joke!',
-        child: Icon(Icons.add),
+        child: Icon(Icons.sentiment_very_satisfied),
       ),
     );
   }

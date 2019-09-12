@@ -24,7 +24,10 @@ class Joke {
 
 Future<Joke> fetchJoke() async {
   String url = 'https://icanhazdadjoke.com/';
-  Map<String, String> header = {"Accept": "application/json"};
+  Map<String, String> header = {
+    "Accept": "application/json",
+    "User-Agent": "https://github.com/hieutle2011"
+  };
   http.Response response = await http.get(url, headers: header);
   if (response.statusCode == 200) {
     var body = json.decode(response.body);
