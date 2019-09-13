@@ -39,17 +39,13 @@ const String LoadMore = r'''
 ''';
 
 int pageSize = 2;
-String after = 'ck0f3wumyr2u00b40ek1tp64g ';
-String before = 'ck0f3wumyr2u00b40ek1tp64g  ';
+// String after = 'ck0f3wumyr2u00b40ek1tp64g ';
+// String before = 'ck0f3wumyr2u00b40ek1tp64g  ';
 
-// final QueryOptions options = QueryOptions(
-//   document: LoadNew,
-//   variables: <String, dynamic>{'pageSize': pageSize},
-// );
-
-QueryOptions newOption(String doc) {
+QueryOptions newOption(String document,
+    {int pageSize, String after, String before}) {
   return QueryOptions(
-    document: doc,
+    document: document,
     variables: <String, dynamic>{
       'pageSize': pageSize,
       'after': after,
@@ -63,26 +59,35 @@ Future<QueryResult> FuncLoadNew() async {
   return await _client.query(options);
 }
 
-Future<QueryResult> FuncPullRefresh() async {
-  QueryOptions options = newOption(PullRefresh);
+Future<QueryResult> FuncPullRefresh(String before) async {
+  QueryOptions options = newOption(
+    PullRefresh,
+    pageSize: pageSize,
+    before: before,
+  );
   return await _client.query(options);
 }
 
-Future<QueryResult> FuncLoadMore() async {
-  QueryOptions options = newOption(LoadMore);
+Future<QueryResult> FuncLoadMore(String after) async {
+  QueryOptions options = newOption(
+    LoadMore,
+    pageSize: pageSize,
+    after: after,
+  );
   return await _client.query(options);
 }
 
 void main() async {
-  QueryResult result = await FuncPullRefresh();
+  var beforeThisId = 'ck0f4dh73r3yu0b40saywadxh';
+  QueryResult result = await FuncPullRefresh(beforeThisId);
   if (result.hasErrors) {
     print(result.errors);
   }
   // print(result.data is Map);
-  print(result.data['users'][0] is Map);
-  print(result.data['users'][0]);
-  var arr = result.data['users'].map((user) => {User.fromJson(user)});
-  print(arr);
-  var list = List.from(arr);
-  print(list[0] is User);
+  // print(result.data['users'][0] is Map);
+  print(result.data['users']);
+  // var arr = result.data['users'].map((user) => {User.fromJson(user)});
+  // print(arr);
+  // var list = List.from(arr);
+  // print(list[0] is User);
 }
