@@ -1,5 +1,5 @@
 import 'package:graphql/client.dart';
-import 'dart:convert';
+// import 'dart:convert';
 
 import 'user.dart';
 
@@ -12,8 +12,8 @@ final GraphQLClient _client = GraphQLClient(
   link: _httpLink,
 );
 
-const String LoadNew = r'''
-  query LoadNew {
+const String LOADNEW = r'''
+  query {
     users (first:2,  orderBy: id_DESC) {
     id
     name
@@ -21,8 +21,8 @@ const String LoadNew = r'''
   }
 ''';
 
-const String PullRefresh = r'''
-  query PullRefresh($pageSize: Int, $before: String) {
+const String PULLREFRESH = r'''
+  query ($pageSize: Int, $before: String) {
     users (last: $pageSize, before: $before,  orderBy: id_DESC) {
       id
       name 
@@ -30,8 +30,8 @@ const String PullRefresh = r'''
   }
 ''';
 
-const String LoadMore = r'''
-  query LoadMore($pageSize: Int, $after: String) {
+const String LOADMORE = r'''
+  query ($pageSize: Int, $after: String) {
     users (first: $pageSize, after: $after,  orderBy: id_DESC) {
       id
       name 
@@ -50,18 +50,19 @@ QueryOptions newOption(String document,
       'after': after,
       'before': before,
     },
+    fetchPolicy: FetchPolicy.networkOnly,
   );
 }
 
 Future<List<User>> FuncLoadNew() async {
-  QueryOptions options = newOption(LoadNew);
+  QueryOptions options = newOption(LOADNEW);
   final result = await _client.query(options);
   return parseUser(result);
 }
 
 Future<List<User>> FuncPullRefresh(String before) async {
   QueryOptions options = newOption(
-    PullRefresh,
+    PULLREFRESH,
     pageSize: pageSize,
     before: before,
   );
@@ -71,7 +72,7 @@ Future<List<User>> FuncPullRefresh(String before) async {
 
 Future<List<User>> FuncLoadMore(String after) async {
   QueryOptions options = newOption(
-    LoadMore,
+    LOADMORE,
     pageSize: pageSize,
     after: after,
   );
@@ -85,6 +86,7 @@ List<User> parseUser(QueryResult result) {
   } else {
     var data = result.data;
     var mapUsers = data['users'];
+    print('map user $mapUsers');
     List<User> arrUsers =
         mapUsers.map<User>((user) => User.fromJson(user)).toList();
     return arrUsers;
@@ -92,7 +94,7 @@ List<User> parseUser(QueryResult result) {
 }
 
 // void main() async {
-//   var beforeThisId = 'ck0f3wumyr2u00b40ek1tp64g';
+//   var beforeThisId = 'ck0f3tjcyr2m00b40ypltsxxe';
 //   var result = await FuncPullRefresh(beforeThisId);
 
 //   print(result);

@@ -8,11 +8,6 @@ class User {
     return User(id: json['id'], name: json['name']);
   }
 
-  String getId() {
-    return this.id;
-  }
-
-  String getName() {
-    return this.name;
-  }
+  String getId() => this.id;
+  String getName() => this.name;
 }

@@ -1,6 +1,4 @@
 import 'package:flutter_web/material.dart';
-import 'package:graphql/client.dart';
-// import 'package:graphql/client.dart';
 
 import 'prisma.dart';
 import 'user.dart';
@@ -8,7 +6,6 @@ import 'user.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,17 +28,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String message = "max Scroll or min Scroll";
+  String message = "Scroll Status";
   ScrollController _controller;
-  Future<QueryResult> future;
-  bool mode = true;
-  // List<dynamic> sampleData = [
-  //   User(id: '1', name: 'abc 1'),
-  //   User(id: '2', name: 'abc 2'),
-  //   User(id: '3', name: 'abc 3'),
-  //   User(id: '4', name: 'abc 4'),
-  //   User(id: '5', name: 'abc 5'),
-  // ];
+  List<User> allUsers = [];
+  String lastId = '';
+  String topId = '';
 
   _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent) {
@@ -59,33 +50,44 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _controller = ScrollController();
     _controller.addListener(_scrollListener);
-    future = FuncPullRefresh();
+
+    // Load initial data from query
+    FuncLoadNew().then((List<User> res) {
+      setState(() {
+        allUsers.addAll(res);
+        topId = allUsers[0].getId();
+        lastId = allUsers[allUsers.length - 1].getId();
+      });
+    });
     super.initState();
   }
 
-  void loadNew() {
-    print('click');
-    setState(() {
-      future = FuncLoadNew();
-    });
+  void pull() async {
+    print('click pull - topId $topId');
+    var result = await FuncPullRefresh(topId);
+    print('click pull result empty? ${result.isEmpty}');
+    print('---------------------');
+    if (result.isNotEmpty) {
+      String newTop = result[0].getId();
+      setState(() {
+        allUsers.insertAll(0, result);
+        topId = newTop;
+      });
+    }
   }
 
-  void pullRefresh() {
-    setState(() {
-      future = FuncPullRefresh();
-    });
-  }
-
-  void loadMore() {
-    setState(() {
-      future = FuncLoadMore();
-    });
-  }
-
-  void changeMode() {
-    setState(() {
-      mode = !mode;
-    });
+  void load() async {
+    print('click load - lastId $lastId');
+    var result = await FuncLoadMore(lastId);
+    print('click load result empty? ${result.isEmpty}');
+    print('---------------------');
+    if (result.isNotEmpty) {
+      String newLast = result[result.length - 1].getId();
+      setState(() {
+        allUsers.addAll(result);
+        lastId = newLast;
+      });
+    }
   }
 
   @override
@@ -94,25 +96,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("Scroll Limit reached"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.new_releases),
-            onPressed: () => loadNew(),
-            tooltip: "Load New",
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.new_releases),
+          //   onPressed: () => test(),
+          //   tooltip: "Load New",
+          // ),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => pullRefresh(),
+            onPressed: () => pull(),
             tooltip: "Pull Refresh",
           ),
           IconButton(
             icon: Icon(Icons.more),
-            onPressed: () => loadMore(),
+            onPressed: () => load(),
             tooltip: "Load More",
-          ),
-          IconButton(
-            icon: Icon(Icons.mode_edit),
-            onPressed: () => changeMode(),
-            tooltip: "Change Scroll Data",
           ),
         ],
       ),
@@ -125,46 +122,19 @@ class _HomePageState extends State<HomePage> {
               child: Text(message),
             ),
           ),
-          mode
-              ? FutureBuilder(
-                  future: future,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      List<dynamic> users = snapshot.data.data['users']
-                          .map((user) => User.fromJson(user))
-                          .toList();
-                      return Expanded(
-                        child: ListView.builder(
-                          // reverse: true,
-                          controller: _controller,
-                          itemCount: users.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: Icon(Icons.face),
-                              title: Text(
-                                  "Index : $index - ${users[index].getName()}"),
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                )
-              : Expanded(
-                  child: ListView.builder(
-                    // reverse: true,
-                    controller: _controller,
-                    itemCount: 15,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Icon(Icons.list),
-                        title: Text("Index : $index"),
-                      );
-                    },
-                  ),
-                ),
+          Expanded(
+            child: ListView.builder(
+              physics: AlwaysScrollableScrollPhysics(),
+              controller: _controller,
+              itemCount: allUsers.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: Icon(Icons.face),
+                  title: Text("Index : $index - ${allUsers[index].getName()}"),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
