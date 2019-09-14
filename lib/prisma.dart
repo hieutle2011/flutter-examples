@@ -13,8 +13,8 @@ final GraphQLClient _client = GraphQLClient(
 );
 
 const String LOADNEW = r'''
-  query {
-    users (first:2,  orderBy: id_DESC) {
+  query ($pageSize: Int) {
+    users (first:$pageSize,  orderBy: id_DESC) {
     id
     name
     }
@@ -55,7 +55,10 @@ QueryOptions newOption(String document,
 }
 
 Future<List<User>> FuncLoadNew() async {
-  QueryOptions options = newOption(LOADNEW);
+  QueryOptions options = newOption(
+    LOADNEW,
+    pageSize: pageSize,
+  );
   final result = await _client.query(options);
   return parseUser(result);
 }

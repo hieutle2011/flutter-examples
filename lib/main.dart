@@ -1,3 +1,4 @@
+// import 'package:flutter_web/gestures.dart';
 import 'package:flutter_web/material.dart';
 
 import 'prisma.dart';
@@ -36,10 +37,14 @@ class _HomePageState extends State<HomePage> {
 
   _scrollListener() {
     if (_controller.offset >= _controller.position.maxScrollExtent) {
+      print('bottom');
+      load();
       setState(() {
         message = 'reach the bottom = max scroll';
       });
     } else if (_controller.offset <= _controller.position.minScrollExtent) {
+      print('top');
+      pull();
       setState(() {
         message = 'reach the top = min scroll';
       });
@@ -125,6 +130,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ListView.builder(
               physics: AlwaysScrollableScrollPhysics(),
+              // dragStartBehavior: DragStartBehavior.down,
               controller: _controller,
               itemCount: allUsers.length,
               itemBuilder: (context, index) {
