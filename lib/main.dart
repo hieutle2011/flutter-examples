@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       });
     } else if (_controller.offset <= _controller.position.minScrollExtent) {
       print('top');
-      pull();
+      // pull();
       setState(() {
         message = 'reach the top = min scroll';
       });
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  void pull() async {
+  Future<void> pull() async {
     print('click pull - topId $topId');
     var result = await FuncPullRefresh(topId);
     print('click pull result empty? ${result.isEmpty}');
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void load() async {
+  Future<void> load() async {
     print('click load - lastId $lastId');
     var result = await FuncLoadMore(lastId);
     print('click load result empty? ${result.isEmpty}');
@@ -128,17 +128,20 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              physics: AlwaysScrollableScrollPhysics(),
-              // dragStartBehavior: DragStartBehavior.down,
-              controller: _controller,
-              itemCount: allUsers.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.face),
-                  title: Text("Index : $index - ${allUsers[index].getName()}"),
-                );
-              },
+            child: RefreshIndicator(
+              child: ListView.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                controller: _controller,
+                itemCount: allUsers.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Icon(Icons.face),
+                    title:
+                        Text("Index : $index - ${allUsers[index].getName()}"),
+                  );
+                },
+              ),
+              onRefresh: pull,
             ),
           ),
         ],
