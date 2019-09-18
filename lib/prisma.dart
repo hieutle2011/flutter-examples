@@ -41,8 +41,13 @@ const String LOADMORE = r'''
 
 int pageSize = 2;
 
-QueryOptions newOption(String document,
-    {int pageSize, String after, String before}) {
+QueryOptions newOption(
+  String document, {
+  int pageSize,
+  String after,
+  String before,
+  FetchPolicy fetchPolicy,
+}) {
   return QueryOptions(
     document: document,
     variables: <String, dynamic>{
@@ -50,7 +55,7 @@ QueryOptions newOption(String document,
       'after': after,
       'before': before,
     },
-    fetchPolicy: FetchPolicy.networkOnly,
+    fetchPolicy: fetchPolicy,
   );
 }
 
@@ -68,6 +73,7 @@ Future<List<User>> FuncPullRefresh(String before) async {
     PULLREFRESH,
     pageSize: pageSize,
     before: before,
+    fetchPolicy: FetchPolicy.cacheAndNetwork,
   );
   final result = await _client.query(options);
   return parseUser(result);
